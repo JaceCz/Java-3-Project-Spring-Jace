@@ -1,10 +1,9 @@
 package com.example.java3projectspringjace;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 import java.io.PrintStream;
+import java.util.List;
 
 /**
  * Simple class to store all book information. The information will not change.
@@ -20,7 +19,14 @@ public class Book {
     // @Column(name = "editionNumber")
     private int editionNumber;
     private String copyright;
-    //private List<Author> authorList;
+
+    @ManyToMany
+    @JoinTable(
+            name = "author_isbn",
+            joinColumns = @JoinColumn(name = "isbn"),
+            inverseJoinColumns = @JoinColumn(name = "id"))
+    private List<Author> authorList;
+
 
     /**
      * Get the ISBN
@@ -56,5 +62,13 @@ public class Book {
 
     public void setCopyright(String copyright) {
         this.copyright = copyright;
+    }
+
+    public List<Author> getAuthorList() {
+        return authorList;
+    }
+
+    public void setAuthorList(List<Author> authorList) {
+        this.authorList = authorList;
     }
 }
