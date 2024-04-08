@@ -15,8 +15,13 @@ public class MainController {
 
     public static final String BOOK = "/books";
 
+    public static final String AUTHORS = "/authors";
+
     @Autowired
     private BookRepository bookRepository;
+
+    @Autowired
+    private AuthorRepository authorRepository;
 
     @GetMapping(path=BOOK)
     public @ResponseBody
@@ -26,7 +31,13 @@ public class MainController {
 
     @GetMapping(path = BOOK + "/{isbn}")
     public @ResponseBody
-    Book getBookWithId(@PathVariable String isbn){
-        return bookRepository.findBookByIsbn(isbn);
+    Book getBookWithId(@PathVariable String isbn){ return bookRepository.findBookByIsbn(isbn);
     }
+
+    @GetMapping(path=AUTHORS)
+    public @ResponseBody
+    Iterable<Author> getAllAuthors(){
+        return authorRepository.findAll();
+    }
+
 }
