@@ -17,7 +17,7 @@ public class Book {
     private String isbn;
     private String title;
 
-    //@Column(name = "editionNumber")
+    // @Column(name = "editionNumber")
     private int editionNumber;
     private String copyright;
     //private List<Author> authorList;

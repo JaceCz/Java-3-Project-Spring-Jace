@@ -1,10 +1,9 @@
 package com.example.java3projectspringjace;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Optional;
 
 /**
  * Main Controller for the Books Database API
@@ -19,9 +18,15 @@ public class MainController {
     @Autowired
     private BookRepository bookRepository;
 
-    @GetMapping(path="/books")
+    @GetMapping(path=BOOK)
     public @ResponseBody
     Iterable<Book> getAllBooks(){
         return bookRepository.findAll();
+    }
+
+    @GetMapping(path = BOOK + "/{isbn}")
+    public @ResponseBody
+    Book getBookWithId(@PathVariable String isbn){
+        return bookRepository.findBookByIsbn(isbn);
     }
 }
