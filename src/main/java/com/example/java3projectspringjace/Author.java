@@ -1,7 +1,9 @@
 package com.example.java3projectspringjace;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity(name = "authors")
@@ -15,7 +17,8 @@ public class Author {
 
 
     @ManyToMany(mappedBy = "authorList")
-    private List<Book> bookList;
+    @JsonBackReference
+    private List<Book> bookList = new ArrayList<>();
 
     public Integer getId() {
         return id;

@@ -34,10 +34,68 @@ public class MainController {
     Book getBookWithId(@PathVariable String isbn){ return bookRepository.findBookByIsbn(isbn);
     }
 
+    @PostMapping(path=BOOK)
+    public @ResponseBody
+    String addNewBook(@RequestParam String isbn, @RequestParam String title, @RequestParam int editionNumber, @RequestParam String copyright, @RequestParam Integer author_id){
+        Book book = new Book();
+        book.setIsbn(isbn);
+        book.setTitle(title);
+        book.setEditionNumber(editionNumber);
+        book.setCopyright(copyright);
+        Optional<Author> author = authorRepository.findById(author_id);
+        if(author.isPresent()){
+            book.getAuthorList().add(author.get());
+            bookRepository.save(book);
+            return "Saved";
+        }
+        return "Author not found!";
+    }
+
     @GetMapping(path=AUTHORS)
     public @ResponseBody
     Iterable<Author> getAllAuthors(){
         return authorRepository.findAll();
     }
+
+    @GetMapping(path=AUTHORS + "/{author_id}")
+    public @ResponseBody
+    Optional<Author> getAuthorWithId(@PathVariable Integer author_id){
+        return authorRepository.findById(author_id);
+    }
+
+    @PostMapping(path=AUTHORS)
+    public @ResponseBody
+    String addNewAuthor(@RequestParam String firstName, @RequestParam String lastName){
+        Author author = new Author();
+        author.setFirstName(firstName);
+        author.setLastName(lastName);
+        authorRepository.save(author);
+        return "Saved";
+    }
+
+   @PutMapping(path=AUTHORS + "/{author_id}")
+   public @ResponseBody
+   String updateAuthor(@PathVariable Integer author_id, @RequestParam String firstName, @RequestParam String lastName) {
+        Optional<Author> author = authorRepository.findById(author_id);
+        if(author.isPresent()){
+            Author author1 = author.get();
+            author1.setFirstName(firstName);
+            author1.setLastName(lastName);
+            authorRepository.save(author1);
+            return "Updated";
+        }
+        return "Author not found!";
+   }
+
+   @DeleteMapping(path=AUTHORS + "/{author_id}")
+   public @ResponseBody
+   String deleteAuthor(@PathVariable Integer author_id){
+        Optional<Author> author = authorRepository.findById(author_id);
+        if(author.isPresent()){
+            authorRepository.delete(author.get());
+            return "Deleted";
+        }
+        return "Author not found";
+   }
 
 }
