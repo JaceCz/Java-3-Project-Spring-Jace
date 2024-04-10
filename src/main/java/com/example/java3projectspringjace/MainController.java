@@ -51,6 +51,39 @@ public class MainController {
         return "Author not found!";
     }
 
+    @PutMapping(path = BOOK + "/{isbn}")
+    public @ResponseBody String updateBook(@PathVariable String isbn, @RequestParam String title, @RequestParam int editionNumber, @RequestParam String copyright, @RequestParam Integer author_id) {
+        Optional<Book> bookOptional = bookRepository.findById(isbn);
+        if(bookOptional.isPresent()){
+            Book book = bookOptional.get();
+            book.setTitle(title);
+            book.setEditionNumber(editionNumber);
+            book.setCopyright(copyright);
+            Optional<Author> author = authorRepository.findById(author_id);
+            if(author.isPresent()){
+                book.getAuthorList().clear();
+                book.getAuthorList().add(author.get());
+                bookRepository.save(book);
+                return "Book Updated";
+            } else {
+                return "Author not found!";
+            }
+        }
+        return "Book not found!";
+    }
+
+    @DeleteMapping(path = BOOK + "/{isbn}")
+    public @ResponseBody String deleteBook(@PathVariable String isbn) {
+        Optional<Book> book = bookRepository.findById(isbn);
+        if(book.isPresent()){
+            bookRepository.delete(book.get());
+            return "Book Deleted";
+        }
+        return "Book not found";
+    }
+
+
+
     @GetMapping(path=AUTHORS)
     public @ResponseBody
     Iterable<Author> getAllAuthors(){

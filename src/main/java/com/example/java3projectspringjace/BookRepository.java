@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * Repository for Book Data Access Object
  */
-public interface BookRepository extends CrudRepository<Book, Integer> {
+public interface BookRepository extends CrudRepository<Book, String> {
 
     Book findBookByIsbn(String isbn);
 }
