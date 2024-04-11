@@ -6,9 +6,9 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Optional;
 
 /**
- * Main Controller for the Books Database API
+ * Controller for handling all web requests related to Books and Authors.
+ * Maps all operations under the "api/v1" base URL.
  */
-
 @RestController
 @RequestMapping(path="api/v1")
 public class MainController {
@@ -23,17 +23,35 @@ public class MainController {
     @Autowired
     private AuthorRepository authorRepository;
 
+    /**
+     * Retrieves all books available in the repository.
+     * @return an iterable collection of books.
+     */
     @GetMapping(path=BOOK)
     public @ResponseBody
     Iterable<Book> getAllBooks(){
         return bookRepository.findAll();
     }
 
+    /**
+     * Retrieves a book by its ISBN.
+     * @param isbn The ISBN of the book to retrieve.
+     * @return the book if found, or {@code null} if not found.
+     */
     @GetMapping(path = BOOK + "/{isbn}")
     public @ResponseBody
     Book getBookWithId(@PathVariable String isbn){ return bookRepository.findBookByIsbn(isbn);
     }
 
+    /**
+     * Adds a new book to the repository with the provided details and associates it with an author.
+     * @param isbn The ISBN of the new book.
+     * @param title The title of the new book.
+     * @param editionNumber The edition number of the new book.
+     * @param copyright The copyright year of the new book.
+     * @param author_id The ID of the author associated with the new book.
+     * @return A success message if saved, otherwise an error message if the author isn't found.
+     */
     @PostMapping(path=BOOK)
     public @ResponseBody
     String addNewBook(@RequestParam String isbn, @RequestParam String title, @RequestParam int editionNumber, @RequestParam String copyright, @RequestParam Integer author_id){
@@ -51,6 +69,16 @@ public class MainController {
         return "Author not found!";
     }
 
+    /**
+     * Updates an existing book identified by ISBN with new details.
+     * @param isbn The ISBN of the book to update.
+     * @param title New title for the book.
+     * @param editionNumber New edition number for the book.
+     * @param copyright New copyright year for the book.
+     * @param author_id The ID of the new author associated with the book.
+     * @return A success message if the book is updated, "Author not found!" if the author ID is invalid,
+     *         or "Book not found!" if the book does not exist.
+     */
     @PutMapping(path = BOOK + "/{isbn}")
     public @ResponseBody String updateBook(@PathVariable String isbn, @RequestParam String title, @RequestParam int editionNumber, @RequestParam String copyright, @RequestParam Integer author_id) {
         Optional<Book> bookOptional = bookRepository.findById(isbn);
@@ -72,6 +100,11 @@ public class MainController {
         return "Book not found!";
     }
 
+    /**
+     * Deletes a book from the repository identified by ISBN.
+     * @param isbn The ISBN of the book to delete.
+     * @return A success message if the book is deleted, otherwise a failure message if the book is not found.
+     */
     @DeleteMapping(path = BOOK + "/{isbn}")
     public @ResponseBody String deleteBook(@PathVariable String isbn) {
         Optional<Book> book = bookRepository.findById(isbn);
@@ -82,20 +115,33 @@ public class MainController {
         return "Book not found";
     }
 
-
-
+    /**
+     * Retrieves all authors from the repository.
+     * @return an iterable collection of all authors.
+     */
     @GetMapping(path=AUTHORS)
     public @ResponseBody
     Iterable<Author> getAllAuthors(){
         return authorRepository.findAll();
     }
 
+    /**
+     * Retrieves an author by their ID.
+     * @param author_id The ID of the author to retrieve.
+     * @return An Optional containing the author if found, or an empty Optional if not found.
+     */
     @GetMapping(path=AUTHORS + "/{author_id}")
     public @ResponseBody
     Optional<Author> getAuthorWithId(@PathVariable Integer author_id){
         return authorRepository.findById(author_id);
     }
 
+    /**
+     * Adds a new author to the repository.
+     * @param firstName The first name of the author.
+     * @param lastName The last name of the author.
+     * @return A success message if the author is saved.
+     */
     @PostMapping(path=AUTHORS)
     public @ResponseBody
     String addNewAuthor(@RequestParam String firstName, @RequestParam String lastName){
@@ -106,6 +152,14 @@ public class MainController {
         return "Saved";
     }
 
+
+    /**
+     * Updates an existing author's details.
+     * @param author_id The ID of the author to update.
+     * @param firstName The new first name for the author.
+     * @param lastName The new last name for the author.
+     * @return A success message if updated, otherwise "Author not found!".
+     */
    @PutMapping(path=AUTHORS + "/{author_id}")
    public @ResponseBody
    String updateAuthor(@PathVariable Integer author_id, @RequestParam String firstName, @RequestParam String lastName) {
@@ -120,6 +174,11 @@ public class MainController {
         return "Author not found!";
    }
 
+    /**
+     * Deletes an author from the repository identified by their ID.
+     * @param author_id The ID of the author to delete.
+     * @return A success message if the author is deleted, otherwise "Author not found!".
+     */
    @DeleteMapping(path=AUTHORS + "/{author_id}")
    public @ResponseBody
    String deleteAuthor(@PathVariable Integer author_id){
